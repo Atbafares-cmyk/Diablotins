@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Quels sont vos diablotins favoris ?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#101010; --surface:#191919; --surface2:#212121; --line:#2E2E2E;
+    --ink:#F4F4F4; --muted:#9A9A9A; --accent:#8E7BF5; --ok:#4FBF87; --radius:14px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:var(--bg);color:var(--ink);
+       font-family:"DM Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+       -webkit-font-smoothing:antialiased}
+  body{padding:24px 16px 80px;line-height:1.5}
+  .wrap{max-width:880px;margin:0 auto}
+  .brand{font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);font-weight:700}
+  h1{font-size:clamp(1.6rem,5.4vw,2.4rem);font-weight:700;letter-spacing:-.02em;line-height:1.12;margin:10px 0 10px}
+  h2{font-size:.95rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:700;margin:30px 0 12px}
+  h3{font-size:1.05rem;font-weight:700;margin:26px 0 10px}
+  .lede{color:var(--muted);max-width:62ch}
+  p+p{margin-top:10px}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:20px}
+  .btn{appearance:none;border:0;border-radius:999px;background:var(--accent);color:#0C0C0C;
+       font-family:inherit;font-size:1rem;font-weight:700;padding:14px 26px;cursor:pointer;transition:.15s}
+  .btn:hover{filter:brightness(1.12)}
+  .btn:disabled{opacity:.35;cursor:not-allowed}
+  .btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+  .screen{display:none}
+  .screen.on{display:block}
+  .top{position:sticky;top:0;z-index:20;background:rgba(16,16,16,.93);backdrop-filter:blur(8px);
+       margin:-24px -16px 18px;padding:12px 16px 10px;border-bottom:1px solid var(--line)}
+  .meta{display:flex;justify-content:space-between;font-size:.78rem;color:var(--muted);margin-bottom:8px;gap:10px}
+  .track{height:4px;background:var(--surface2);border-radius:999px;overflow:hidden}
+  .fill{height:100%;background:var(--accent);width:0;transition:width .2s}
+  .qnum{font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);font-weight:700}
+  .q{font-size:clamp(1.1rem,3.6vw,1.4rem);font-weight:500;margin:8px 0 20px;line-height:1.35}
+  .opts{display:flex;flex-direction:column;gap:10px}
+  .opt{display:flex;gap:12px;align-items:flex-start;text-align:left;width:100%;
+       background:var(--surface);border:1px solid var(--line);border-radius:12px;
+       color:var(--ink);font-family:inherit;font-size:.98rem;padding:14px 16px;cursor:pointer;transition:.12s}
+  .opt:hover{border-color:#4A4A4A}
+  .opt[aria-pressed="true"]{border-color:var(--accent);background:#1B1718}
+  .opt .k{flex:0 0 26px;height:26px;border-radius:50%;background:var(--surface2);border:1px solid var(--line);
+       display:grid;place-items:center;font-size:.76rem;font-weight:700;color:var(--muted)}
+  .opt[aria-pressed="true"] .k{background:var(--accent);border-color:var(--accent);color:#0C0C0C}
+  .nav{display:flex;gap:12px;margin-top:26px;flex-wrap:wrap}
+  .verdict{border-left:3px solid var(--accent);padding-left:18px;margin:18px 0 26px}
+  .score{display:flex;align-items:baseline;gap:10px;margin:16px 0 6px}
+  .score .n{font-size:clamp(2.6rem,11vw,4rem);font-weight:700;line-height:1;letter-spacing:-.03em;
+       font-variant-numeric:tabular-nums}
+  .score .d{color:var(--muted)}
+  .bars{display:flex;flex-direction:column;gap:10px;margin:18px 0}
+  .brow{display:grid;grid-template-columns:1fr;gap:6px;background:var(--surface);border:1px solid var(--line);
+       border-radius:12px;padding:13px 15px}
+  .brow.hot{border-color:var(--accent);background:#1B1718}
+  .brow .hd{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+  .brow .nm{font-weight:700}
+  .brow .vl{font-variant-numeric:tabular-nums;font-weight:700;color:var(--muted)}
+  .brow.hot .vl{color:var(--accent)}
+  .brow .g{height:6px;background:var(--surface2);border-radius:999px;overflow:hidden}
+  .brow .g i{display:block;height:100%;background:#4A4A4A}
+  .brow.hot .g i{background:var(--accent)}
+  .brow .cm{font-size:.86rem;color:var(--muted)}
+  .det{border-top:1px solid var(--line);padding:13px 0;display:grid;
+       grid-template-columns:34px 1fr;gap:12px;align-items:start}
+  .det .ix{font-size:.78rem;font-weight:700;color:var(--muted);font-variant-numeric:tabular-nums;padding-top:2px}
+  .det .tx{min-width:0}
+  .det .tx b{display:block;font-weight:500;margin-bottom:4px}
+  .det .tx span{color:var(--muted);font-size:.88rem}
+  .det.ko .ix{color:var(--accent)}
+  .tag{display:inline-block;font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;font-weight:700;
+       padding:3px 9px;border-radius:999px;border:1px solid var(--line);color:var(--muted);margin-right:6px}
+  .tag.a{border-color:var(--accent);color:var(--accent)}
+  .tag.o{border-color:var(--ok);color:var(--ok)}
+  .chk{display:flex;gap:11px;align-items:flex-start;padding:11px 0;border-top:1px solid var(--line);cursor:pointer}
+  .chk input{appearance:none;flex:0 0 20px;height:20px;margin-top:2px;border:1px solid var(--line);
+       border-radius:5px;background:var(--surface2);cursor:pointer}
+  .chk input:checked{background:var(--accent);border-color:var(--accent)}
+  .chk span{font-size:.94rem}
+  .note{margin-top:26px;color:var(--muted);font-size:.88rem;border-top:1px solid var(--line);padding-top:16px}
+  table.t{width:100%;border-collapse:collapse;font-size:.92rem}
+  table.t th,table.t td{border:1px solid var(--line);padding:9px 10px;text-align:left;vertical-align:top}
+  table.t th{background:var(--surface2);font-size:.74rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+  input.f,select.f,textarea.f{font-family:inherit;font-size:.95rem;color:var(--ink);background:var(--surface2);
+       border:1px solid var(--line);border-radius:9px;padding:10px 12px;width:100%}
+  input.f:focus,select.f:focus,textarea.f:focus{outline:0;border-color:var(--accent)}
+  footer{margin-top:44px;padding-top:18px;border-top:1px solid var(--line);color:var(--muted);font-size:.78rem;
+       display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+  @media print{ body{background:#fff;color:#000} .btn,.top{display:none} }
+</style>
+<style>
+/* 23ms-theme */
+:root{
+    --on-accent:#0C0C0C; --accent:#8E7BF5;
+    --soft:#1B1718; --soft:color-mix(in srgb, #8E7BF5 12%, #191919);
+}
+:root[data-theme="light"]{
+    --bg:#FAFAF7; --surface:#FFFFFF; --surface2:#F2F2ED; --line:#DFDFD8;
+    --ink:#16161A; --muted:#5F5F5A; --ok:#2F8F62; --on-accent:#FFFFFF;
+    --accent:#6248C9; --accent-dim:#F7ECEE;
+    --soft:#F4F1EE; --soft:color-mix(in srgb, #6248C9 10%, #FFFFFF);
+}
+@media (prefers-color-scheme: light){
+  :root:not([data-theme="dark"]){
+    --bg:#FAFAF7; --surface:#FFFFFF; --surface2:#F2F2ED; --line:#DFDFD8;
+    --ink:#16161A; --muted:#5F5F5A; --ok:#2F8F62; --on-accent:#FFFFFF;
+    --accent:#6248C9; --accent-dim:#F7ECEE;
+    --soft:#F4F1EE; --soft:color-mix(in srgb, #6248C9 10%, #FFFFFF);
+}
+}
+.btn{color:var(--on-accent)}
+.opt:hover{border-color:var(--muted)}
+.opt[aria-pressed="true"]{background:var(--soft)}
+.opt[aria-pressed="true"] .k{color:var(--on-accent)}
+.brow.hot{background:var(--soft)}
+.brow .g i{background:var(--muted)}
+.vf button[aria-pressed="true"]{color:var(--on-accent)}
+.pil[aria-pressed="true"]{color:var(--on-accent)}
+ol.list li.done{background:var(--soft)}
+.band.me{background:var(--soft)}
+.sheet{background:#FFFFFF;border:1px solid var(--line)}
+.top,.bar{background:var(--bg)}
+.theme{position:fixed;right:14px;bottom:14px;z-index:60;appearance:none;cursor:pointer;
+  font-family:inherit;font-size:.78rem;font-weight:700;padding:9px 15px;border-radius:999px;
+  border:1px solid var(--line);background:var(--surface);color:var(--ink);
+  box-shadow:0 4px 16px rgba(0,0,0,.22)}
+.theme:hover{border-color:var(--accent);color:var(--accent)}
+@media print{
+  :root{ --bg:#FFFFFF; --surface:#FFFFFF; --surface2:#F4F4F0; --line:#CCCCC6;
+         --ink:#000000; --muted:#434341; --ok:#2F8F62; --on-accent:#FFFFFF;
+         --accent:#6248C9; --soft:#F3F3EF; }
+  html,body{background:#FFFFFF;color:#000000}
+  .theme,.nav,.top,.bar{display:none}
+  .card,.brow,.grp,.det,.ex{break-inside:avoid}
+}
+</style>
+<script>(function(){try{var t=localStorage.getItem("23ms-theme");if(t==="light"||t==="dark"){document.documentElement.setAttribute("data-theme",t);}}catch(e){}})();</script>
+</head>
+<body>
+<button class="theme" id="theme" type="button" aria-label="Changer l'affichage">Clair</button>
+
+<div class="wrap">
+
+  <section id="s-intro" class="screen on">
+    <span class="brand">23 MindSet</span>
+    <h1>Quels sont vos diablotins favoris ?</h1>
+    <p class="lede">Quarante questions pour repérer les dix petits voleurs de temps, et savoir lesquels se tiennent à l'affût chez vous.</p>
+    <div class="card" style="margin-top:26px">
+      <p>Pour chaque question, choisissez la fréquence qui correspond à votre fonctionnement.</p>
+      <p>Si vous hésitez entre un comportement en situation professionnelle et personnelle, <b>prenez cette dernière</b>.</p>
+      <p style="color:var(--muted)">Passez peu de temps sur chaque question. Comptez huit minutes.</p>
+      <p style="margin-top:20px"><button class="btn" id="go">Commencer</button></p>
+    </div>
+    <footer><span>D'après le livret d'exercices Excellens Formation - mise en forme numérique 23 MindSet - Fares ATBA</span><span>Questionnaire des diablotins du temps</span></footer>
+  </section>
+
+  <section id="s-q" class="screen">
+    <div class="top">
+      <div class="meta"><span id="pos"></span><span id="cnt"></span></div>
+      <div class="track"><div class="fill" id="fill"></div></div>
+    </div>
+    <span class="qnum" id="qnum"></span>
+    <p class="q" id="qtxt"></p>
+    <div class="opts" id="opts"></div>
+    <div class="nav">
+      <button class="btn ghost" id="prev">Précédent</button>
+      <button class="btn" id="next">Suivant</button>
+    </div>
+  </section>
+
+  <section id="s-res" class="screen">
+    <span class="brand">Votre résultat</span>
+    <h1>Vos diablotins, par ordre d'importance</h1>
+    <p class="lede">Chaque diablotin est noté sur 16. <b>Au-delà de 11 points</b>, il se tient à l'affût, prêt à vous perturber dans votre temps.</p>
+    <div class="bars" id="bars"></div>
+    <h2>Ce que vous pouvez faire dès demain</h2>
+    <div id="act"></div>
+    <h2>Le détail de vos réponses</h2>
+    <p class="lede" style="margin-bottom:10px">Les questions où vous avez répondu « toujours » ou « souvent » apparaissent en premier : ce sont elles qui portent vos scores.</p>
+    <div id="detail"></div>
+    <p class="note">Aucun diablotin n'est un défaut de caractère. Chacun décrit une habitude, et une habitude se change.</p>
+    <p style="margin-top:26px;display:flex;gap:12px;flex-wrap:wrap">
+      <button class="btn ghost" id="again">Recommencer</button>
+      <button class="btn ghost" id="print">Imprimer ou enregistrer en PDF</button>
+    </p>
+    <footer><span>D'après le livret d'exercices Excellens Formation - mise en forme numérique 23 MindSet - Fares ATBA</span><span>Vos réponses restent sur votre appareil.</span></footer>
+  </section>
+
+</div>
+<script>
+
+(function(){
+  "use strict";
+  var Q = ["Pensez-vous que les choses s'arrangent toujours d'elles-mêmes et qu'il sera toujours temps de résoudre les problèmes quand ils se présenteront ?", "Comptez-vous sur les autres pour qu'ils se répartissent spontanément le travail ?", "Vous rendez-vous compte après coup que vous auriez dû prendre des marges de manœuvre dans les délais ?", "Préférez-vous les rêves magnifiques aux réalisations concrètes ?", "Avez-vous tendance à manipuler les documents plusieurs fois avant de vous mettre vraiment au travail ?", "Avez-vous de la difficulté à vous fixer des objectifs concrets, vérifiables et assortis de délais ?", "Faites-vous plusieurs choses à la fois, commençant l'une, passant à une autre, revenant à la première ?", "Êtes-vous allergique aux agendas, à l'organisation personnelle et à la planification ?", "Lorsque vous commencez une journée, estimez-vous que vous parviendrez sans précaution particulière à faire toutes les tâches que vous voulez faire d'ici ce soir ?", "Avez-vous tendance à mettre beaucoup d'énergie au début d'un travail, puis à abandonner assez vite ?", "Préférez-vous vous contenter de projets modestes ?", "Avez-vous tendance à trouver toujours « quelque chose à faire » ?", "Prenez-vous le temps de faire le bilan de vos projets ?", "Trouvez-vous difficile de prendre du bon temps avant d'avoir terminé ce que vous avez commencé ?", "Perdez-vous du temps à retrouver des papiers sur votre bureau du fait du fouillis chronique ?", "Avez-vous tendance à faire des promesses pour faire plaisir, et vous désoler ensuite de ne pas pouvoir les tenir ?", "Si quelqu'un vous demande quelque chose, vous faites-vous après coup le reproche de ne pas avoir pensé à demander « pour quand ? » ?", "Si on vous fait une demande et que celle-ci ne vous plaît pas, avez-vous du mal à refuser franchement et rapidement ?", "Avez-vous du mal à savourer le temps qui passe ?", "Prenez-vous un moment le soir pour faire le point sur la façon dont s'est passée votre journée ?", "Remettez-vous à demain le classement de vos affaires en vous disant qu'en cas de besoin, vous pourrez toujours pêcher dans votre fouillis ?", "Ressentez-vous de l'impatience lorsque vous devez faire la queue ?", "Quand quelque chose ne va pas autour de vous, avez-vous tendance à voler au secours d'autrui ?", "Pour éviter de prendre une décision, imaginez-vous qu'il existe d'autres options tout aussi valables ?", "Avez-vous tendance à laisser faire autrui puis, seulement après, à prendre le train en marche ?", "Pensez-vous que « plus c'est fait vite, mieux c'est » ?", "Avez-vous tendance à surestimer les difficultés dès le départ ?", "Vous désolez-vous de ne pas réaliser les projets qui vous tiennent à cœur ?", "Aimez-vous faire plusieurs choses à la fois ?", "Pesez-vous longtemps le pour et le contre avant de prendre une décision ?", "Lorsque vous devez faire des tâches répétitives, prenez-vous le temps d'écrire ou de mettre dans votre mémoire une « check-list » personnelle ?", "Lorsqu'un projet est clair dans votre esprit, avez-vous du mal à entreprendre ne serait-ce qu'une seule démarche concrète pour le mener à bien ?", "En cas de difficulté, avez-vous tendance à attendre que quelqu'un vous dise quoi faire ?", "Attendez-vous la dernière minute pour vous décider ?", "Avez-vous tendance à attendre la dernière minute pour faire les travaux absolument nécessaires, mais ennuyeux ?", "À la fin d'une réunion, hésitez-vous à demander « qui fait quoi » en posant explicitement la question ?", "Vous arrive-t-il de devoir vous arrêter dans vos tâches personnelles par manque de moyens matériels : essence, timbres, produits ménagers, outillage ?", "Quand vous entendez « On », hésitez-vous à demander « qui » ?", "En cas d'urgence, avez-vous tendance à faire une seule chose très bien et non plusieurs au trois quarts ?", "Vous dites-vous souvent : « la prochaine fois, j'y penserai », sans que cela vous empêche d'oublier la fois suivante ?"], COL = "ABCDEDEFCFHIJIFGBGIJACGEHCHGFHJDDEABABIJ", DIAB = [["A", "La Cigale", "Le temps paraît élastique : il sera toujours temps. Le classement, les tâches ennuyeuses et les échéances lointaines attendent, puis arrivent toutes ensemble.", "Datez une seule tâche remise, aujourd'hui, et tenez la date."], ["B", "« On »", "Les tâches sont attribuées à personne. « On va le faire », « il faudrait que » : sans nom et sans date, rien n'avance.", "En fin de réunion, posez la question : qui fait quoi, pour quand ?"], ["C", "Les Pendules folles", "L'estimation du temps est systématiquement optimiste. Pas de marge, pas de tampon, et l'impatience monte dès qu'il faut attendre.", "Ajoutez un tiers à votre prochaine estimation de durée, et comparez."], ["D", "La Marmotte", "Le projet reste au stade du rêve. Les objectifs ne sont pas formulés, la première démarche concrète n'est jamais engagée.", "Écrivez la toute première action, celle qui tient en dix minutes, et faites-la."], ["E", "Le Hibou", "La décision est repoussée par la réflexion. On tourne autour du dossier, on cherche une option de plus, on attend la dernière minute.", "Fixez-vous une heure limite de décision, et décidez avec ce que vous avez."], ["F", "« Papillonne ! »", "L'attention se disperse. Plusieurs choses à la fois, beaucoup d'énergie au départ, abandon rapide, et un bureau en fouillis.", "Travaillez une seule tâche pendant vingt-cinq minutes, sans rien ouvrir d'autre."], ["G", "« Sois sympa »", "Celui qui n'ose pas dire non. Les promesses pour faire plaisir, le secours spontané aux autres, et son propre travail qui recule.", "La prochaine demande : « oui, et dans ce cas je décale quoi ? »"], ["H", "« Dès hier »", "Tout est urgent, tout de suite, et la vitesse devient une valeur en soi. Les difficultés sont surestimées au départ, puis tout se fait en catastrophe.", "Pour une demande sur deux, demandez la vraie échéance avant de vous lancer."], ["I", "« Ne t'arrête pas »", "Il y a toujours quelque chose à faire. Le bilan, la pause et le plaisir viendront après, c'est-à-dire jamais.", "Bloquez un quart d'heure de bilan en fin de journée, comme un rendez-vous."], ["J", "« Ne profite pas »", "Le temps passé ne se savoure pas. Pas de bilan, pas de check-list, pas de capitalisation : les mêmes oublis reviennent.", "Écrivez une check-list pour la tâche répétitive qui vous coûte le plus."]], NIV = [["Toujours ou presque", 4], ["Souvent", 3], ["De temps en temps", 2], ["Jamais ou presque", 1]];
+  var LET = ["A","B","C","D"];
+  var rep = new Array(Q.length).fill(null);
+  var i = 0;
+  function $(id){ return document.getElementById(id); }
+  function show(id){
+    ["s-intro","s-q","s-res"].forEach(function(s){ $(s).classList.toggle("on", s===id); });
+    window.scrollTo(0,0);
+  }
+  function render(){
+    $("pos").textContent = "Question " + (i+1) + " sur " + Q.length;
+    var done = rep.filter(function(r){ return r!==null; }).length;
+    $("cnt").textContent = done + " r\u00e9pondue" + (done>1?"s":"");
+    $("fill").style.width = Math.round((done/Q.length)*100) + "%";
+    $("qnum").textContent = "Question " + (i+1);
+    $("qtxt").textContent = Q[i];
+    var box = $("opts"); box.innerHTML = "";
+    NIV.forEach(function(nv,k){
+      var b = document.createElement("button");
+      b.type="button"; b.className="opt";
+      b.setAttribute("aria-pressed", rep[i]===k ? "true":"false");
+      var kk=document.createElement("span"); kk.className="k"; kk.textContent=nv[1];
+      var tt=document.createElement("span"); tt.textContent=nv[0];
+      b.appendChild(kk); b.appendChild(tt);
+      b.addEventListener("click", function(){
+        rep[i]=k;
+        if(i<Q.length-1){ i++; }
+        render();
+      });
+      box.appendChild(b);
+    });
+    $("prev").disabled = (i===0);
+    $("next").textContent = (i===Q.length-1) ? "Voir mon r\u00e9sultat" : "Suivant";
+    $("next").disabled = (i===Q.length-1) && rep.indexOf(null)!==-1;
+  }
+  function resultat(){
+    var tot = {};
+    DIAB.forEach(function(d){ tot[d[0]] = 0; });
+    rep.forEach(function(r,k){ tot[COL[k]] += NIV[r][1]; });
+    var ord = DIAB.slice().sort(function(a,b){ return tot[b[0]] - tot[a[0]]; });
+    var bars = $("bars"); bars.innerHTML = "";
+    ord.forEach(function(d){
+      var v = tot[d[0]], hot = v > 11;
+      var row = document.createElement("div"); row.className = "brow" + (hot?" hot":"");
+      var hd = document.createElement("div"); hd.className="hd";
+      var nm = document.createElement("span"); nm.className="nm"; nm.textContent = d[1];
+      var vl = document.createElement("span"); vl.className="vl"; vl.textContent = v + " / 16";
+      hd.appendChild(nm); hd.appendChild(vl);
+      var g = document.createElement("div"); g.className="g";
+      var it = document.createElement("i"); it.style.width = Math.round((v/16)*100) + "%";
+      g.appendChild(it);
+      var cm = document.createElement("div"); cm.className="cm"; cm.textContent = d[2];
+      row.appendChild(hd); row.appendChild(g); row.appendChild(cm);
+      bars.appendChild(row);
+    });
+    var act = $("act"); act.innerHTML = "";
+    var chauds = ord.filter(function(d){ return tot[d[0]] > 11; });
+    if(!chauds.length){ chauds = ord.slice(0,2); }
+    chauds.slice(0,3).forEach(function(d){
+      var p = document.createElement("div"); p.className="det";
+      var ix = document.createElement("span"); ix.className="ix"; ix.textContent = d[0];
+      var tx = document.createElement("span"); tx.className="tx";
+      var b = document.createElement("b"); b.textContent = d[1];
+      var s = document.createElement("span"); s.textContent = d[3];
+      tx.appendChild(b); tx.appendChild(s);
+      p.appendChild(ix); p.appendChild(tx); act.appendChild(p);
+    });
+    var det = $("detail"); det.innerHTML = "";
+    var idx = Q.map(function(_,k){ return k; });
+    idx.sort(function(a,b){ return NIV[rep[b]][1] - NIV[rep[a]][1] || a - b; });
+    idx.forEach(function(k){
+      var pts = NIV[rep[k]][1];
+      var d = document.createElement("div"); d.className = "det" + (pts>=3 ? " ko" : "");
+      var ix = document.createElement("span"); ix.className="ix"; ix.textContent = (k+1);
+      var tx = document.createElement("span"); tx.className="tx";
+      var b = document.createElement("b"); b.textContent = Q[k];
+      var s = document.createElement("span");
+      var t = document.createElement("span"); t.className = "tag" + (pts>=3 ? " a" : "");
+      t.textContent = pts + " pt" + (pts>1?"s":"");
+      s.appendChild(t);
+      s.appendChild(document.createTextNode(NIV[rep[k]][0] + " \u00b7 compte pour : "
+        + DIAB.filter(function(x){ return x[0]===COL[k]; })[0][1]));
+      tx.appendChild(b); tx.appendChild(s);
+      d.appendChild(ix); d.appendChild(tx); det.appendChild(d);
+    });
+    show("s-res");
+  }
+  $("go").addEventListener("click", function(){ i=0; rep.fill(null); render(); show("s-q"); });
+  $("again").addEventListener("click", function(){ i=0; rep.fill(null); render(); show("s-q"); });
+  $("prev").addEventListener("click", function(){ if(i>0){ i--; render(); } });
+  $("next").addEventListener("click", function(){
+    if(i<Q.length-1){ i++; render(); }
+    else if(rep.indexOf(null)===-1){ resultat(); }
+    else { i = rep.indexOf(null); render(); }
+  });
+  $("print").addEventListener("click", function(){ window.print(); });
+})();
+
+</script>
+<script>
+(function(){
+  "use strict";
+  var r = document.documentElement, b = document.getElementById("theme");
+  if(!b) return;
+  function cur(){
+    var a = r.getAttribute("data-theme");
+    if(a === "light" || a === "dark") return a;
+    return (window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches)
+      ? "light" : "dark";
+  }
+  function peindre(){
+    var c = cur();
+    b.textContent = (c === "dark") ? "\u2600 Clair" : "\u263E Sombre";
+    b.setAttribute("aria-label", (c === "dark")
+      ? "Passer \u00e0 l'affichage clair" : "Passer \u00e0 l'affichage sombre");
+  }
+  b.addEventListener("click", function(){
+    var n = (cur() === "dark") ? "light" : "dark";
+    r.setAttribute("data-theme", n);
+    try { localStorage.setItem("23ms-theme", n); } catch(e){}
+    peindre();
+  });
+  if(window.matchMedia){
+    try {
+      window.matchMedia("(prefers-color-scheme: light)").addEventListener("change", function(){
+        if(!r.getAttribute("data-theme")) peindre();
+      });
+    } catch(e){}
+  }
+  peindre();
+})();
+</script>
+</body>
+</html>
